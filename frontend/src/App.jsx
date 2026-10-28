@@ -3,10 +3,11 @@ import Navbar from './components/Navbar';
 import DashboardView from './components/DashboardView';
 import SafetyView from './components/SafetyView';
 import CrackView from './components/CrackView';
-import ValuationView from './components/ValuationView';
-import PlanningView from './components/PlanningView';
-import DailySiteView from './components/DailySiteView';
-import KnowledgeView from './components/KnowledgeView';
+import ProjectPlanner from './components/ProjectPlanner';
+import Valuation from './components/Valuation';
+import DailySiteAssistant from './components/DailySiteAssistant';
+import WeatherAdvisor from './components/WeatherAdvisor';
+import ConstructionChatbot from './components/ConstructionChatbot';
 import HistoryView from './components/HistoryView';
 import { fetchPlatformStatus, fetchDashboardStats, fetchDemoSamples } from './api';
 
@@ -72,32 +73,30 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'valuation' && (
-          <ValuationView
-            demoSamples={demoSamples}
-            onValuationSaved={handleDataSaved}
-          />
-        )}
-
         {activeTab === 'planning' && (
-          <PlanningView
+          <ProjectPlanner
             demoSamples={demoSamples}
             onPlanSaved={handleDataSaved}
           />
         )}
 
-        {activeTab === 'daily-site' && (
-          <DailySiteView
+        {activeTab === 'valuation' && (
+          <Valuation
             demoSamples={demoSamples}
-            onReportSaved={handleDataSaved}
+            onValuationSaved={handleDataSaved}
           />
         )}
 
-        {activeTab === 'knowledge' && (
-          <KnowledgeView
-            demoSamples={demoSamples}
-            onQuerySaved={handleDataSaved}
-          />
+        {activeTab === 'daily-assistant' && (
+          <DailySiteAssistant />
+        )}
+
+        {activeTab === 'weather-advisor' && (
+          <WeatherAdvisor />
+        )}
+
+        {activeTab === 'chatbot' && (
+          <ConstructionChatbot />
         )}
 
         {activeTab === 'history' && (
@@ -114,15 +113,16 @@ export default function App() {
             <span>FastAPI + Vite React + Groq / Multimodal Vision</span>
           </div>
           <div className="flex items-center gap-4 text-slate-400">
+            <span>IS 456:2000</span>
+            <span>•</span>
             <span>OSHA 1926</span>
             <span>•</span>
             <span>ACI 318 / 224R</span>
             <span>•</span>
-            <span>IBC 2024</span>
+            <span>NBC 2016</span>
           </div>
         </div>
       </footer>
     </div>
   );
 }
-

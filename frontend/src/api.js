@@ -1,4 +1,4 @@
-// API Client for Multimodal Construction Intelligence Platform
+// Centralized API Client for Multimodal Construction Intelligence Platform
 
 const API_BASE = '/api';
 
@@ -70,6 +70,49 @@ export async function generateProjectPlan(payload) {
   return res.json();
 }
 
+export async function queryChatbot(payload) {
+  const res = await fetch(`${API_BASE}/chatbot/query`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: 'Chatbot query failed' }));
+    throw new Error(err.detail || 'Chatbot query failed');
+  }
+  return res.json();
+}
+
+export async function queryKnowledgeBase(payload) {
+  return queryChatbot(payload);
+}
+
+export async function analyzeDailySiteAssistant(payload) {
+  const res = await fetch(`${API_BASE}/daily-assistant/analyze`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: 'Daily site assistant analysis failed' }));
+    throw new Error(err.detail || 'Daily site assistant analysis failed');
+  }
+  return res.json();
+}
+
+export async function getWeatherAdvisor(payload) {
+  const res = await fetch(`${API_BASE}/weather-advisor/advisory`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ detail: 'Weather advisory request failed' }));
+    throw new Error(err.detail || 'Weather advisory request failed');
+  }
+  return res.json();
+}
+
 export async function getDailySiteAdvisory(payload) {
   const res = await fetch(`${API_BASE}/daily-site/advisory`, {
     method: 'POST',
@@ -83,22 +126,8 @@ export async function getDailySiteAdvisory(payload) {
   return res.json();
 }
 
-export async function queryKnowledgeBase(payload) {
-  const res = await fetch(`${API_BASE}/knowledge/query`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({ detail: 'Knowledge query failed' }));
-    throw new Error(err.detail || 'Knowledge query failed');
-  }
-  return res.json();
-}
-
 export async function fetchModuleHistory(moduleName) {
   const res = await fetch(`${API_BASE}/history/${moduleName}?limit=30`);
   if (!res.ok) throw new Error('Failed to fetch module history');
   return res.json();
 }
-
