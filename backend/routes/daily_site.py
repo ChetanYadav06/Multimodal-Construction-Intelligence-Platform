@@ -1,13 +1,93 @@
 import uuid
 from datetime import datetime
 from fastapi import APIRouter
-from backend.schemas import DailySiteRequest, DailySiteResponse
-from backend.ai_service import analyze_daily_site_weather
+from backend.schemas import (
+    DailySiteAssistantRequest, 
+    DailySiteAssistantResponse,
+    WeatherAdvisorRequest,
+    WeatherAdvisorResponse,
+    DailySiteRequest, 
+    DailySiteResponse
+)
+from backend.ai_service import process_ai_request, analyze_daily_site_weather
 from backend.database import save_record
 
-router = APIRouter(prefix="/api/daily-site", tags=["Daily Site Assistance & Weather Advisory"])
+router = APIRouter(tags=["Daily Site & Weather Operations"])
 
-@router.post("/advisory", response_model=DailySiteResponse)
+# -------------------------------------------------------------
+# Activity 5.2: Daily Site Assistant
+# -------------------------------------------------------------
+@router.post("/api/daily-assistant/analyze", response_model=DailySiteAssistantResponse)
+async def daily_site_assistant_endpoint(payload: DailySiteAssistantRequest):
+    record_id = f"DSA-{uuid.uuid4().hex[:8].upper()}"
+    timestamp = datetime.now().isoformat()
+
+    result_data = process_ai_request("daily_site_assistant", payload.model_dump())
+
+    response = DailySiteAssistantResponse(
+        id=record_id,
+        timestamp=timestamp,
+        planned_activity=result_data["planned_activity"],
+        labour_count=result_data["labour_count"],
+        site_conditions=result_data["site_conditions"],
+        daily_task_breakdown=result_data["daily_task_breakdown"],
+        required_materials_equipment=result_data["required_materials_equipment"],
+        safety_precautions_checks=result_data["safety_precautions_checks"],
+        potential_risk_alerts=result_data["potential_risk_alerts"],
+        summary_directive=result_data["summary_directive"]
+    )
+
+    summary_fields = {
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "location_name": payload.location_name or "Active Site",
+        "weather_condition": payload.planned_activity[:50],
+        "site_safety_index": 90
+    }
+    save_record("daily_site_reports", record_id, summary_fields, response.model_dump())
+
+    return response
+
+
+# -------------------------------------------------------------
+# Activity 5.3: Weather-Aware Construction Advisory
+# -------------------------------------------------------------
+@router.post("/api/weather-advisor/advisory", response_model=WeatherAdvisorResponse)
+async def weather_advisor_endpoint(payload: WeatherAdvisorRequest):
+    record_id = f"WTR-{uuid.uuid4().hex[:8].upper()}"
+    timestamp = datetime.now().isoformat()
+
+    result_data = process_ai_request("weather_advisor", payload.model_dump())
+
+    response = WeatherAdvisorResponse(
+        id=record_id,
+        timestamp=timestamp,
+        location_name=result_data["location_name"],
+        temperature_c=result_data["temperature_c"],
+        humidity_pct=result_data["humidity_pct"],
+        rain_probability_pct=result_data["rain_probability_pct"],
+        wind_speed_kmh=result_data["wind_speed_kmh"],
+        weather_condition=result_data["weather_condition"],
+        site_readiness_score=result_data["site_readiness_score"],
+        overall_recommendation=result_data["overall_recommendation"],
+        activity_decisions=result_data["activity_decisions"],
+        hazard_precautions=result_data["hazard_precautions"],
+        mitigation_recommendations=result_data["mitigation_recommendations"],
+        data_source_note=result_data["data_source_note"]
+    )
+
+    summary_fields = {
+        "date": datetime.now().strftime("%Y-%m-%d"),
+        "location_name": response.location_name,
+        "weather_condition": response.weather_condition,
+        "site_safety_index": response.site_readiness_score
+    }
+    save_record("daily_site_reports", record_id, summary_fields, response.model_dump())
+
+    return response
+
+
+# Legacy endpoint for backward compatibility
+@router.post("/api/daily-site/advisory", response_model=DailySiteResponse)
 async def daily_site_advisory_endpoint(payload: DailySiteRequest):
     record_id = f"DSR-{uuid.uuid4().hex[:8].upper()}"
     timestamp = datetime.now().isoformat()
@@ -49,4 +129,3 @@ async def daily_site_advisory_endpoint(payload: DailySiteRequest):
     save_record("daily_site_reports", record_id, summary_fields, response.model_dump())
 
     return response
-
