@@ -374,8 +374,23 @@ def analyze_real_estate(
     quality_grade: str = "Premium",
     building_age_years: int = 2,
     amenities: Optional[List[str]] = None,
-    currency: str = "INR"
+    currency: str = "INR",
+    **kwargs
 ) -> Dict[str, Any]:
+    # Handle parameter aliases gracefully for backward and cross-frontend compatibility
+    if "location" in kwargs and kwargs["location"]:
+        property_location = kwargs["location"]
+    if "area_sqft" in kwargs and kwargs["area_sqft"]:
+        built_up_area_sqft = float(kwargs["area_sqft"])
+    if "built_area" in kwargs and kwargs["built_area"]:
+        built_up_area_sqft = float(kwargs["built_area"])
+    if "age_years" in kwargs and kwargs["age_years"] is not None:
+        building_age_years = int(kwargs["age_years"])
+    if "prop_type" in kwargs and kwargs["prop_type"]:
+        property_type = kwargs["prop_type"]
+    if "grade" in kwargs and kwargs["grade"]:
+        quality_grade = kwargs["grade"]
+
     if amenities is None:
         amenities = ["Power Backup", "Covered Parking", "24/7 Security"]
 
@@ -545,8 +560,25 @@ def generate_project_plan(
     total_area_sqft: float = 2200.0,
     target_duration_months: int = 12,
     finish_grade: str = "Standard",
-    labor_rate_tier: str = "Standard"
+    labor_rate_tier: str = "Standard",
+    **kwargs
 ) -> Dict[str, Any]:
+    # Handle parameter aliases gracefully for backward and cross-frontend compatibility
+    if "description" in kwargs and kwargs["description"] and not project_description:
+        project_description = kwargs["description"]
+    if "plot_length" in kwargs and kwargs["plot_length"]:
+        plot_length_ft = float(kwargs["plot_length"])
+    if "plot_width" in kwargs and kwargs["plot_width"]:
+        plot_width_ft = float(kwargs["plot_width"])
+    if "city" in kwargs and kwargs["city"]:
+        city_location = kwargs["city"]
+    if "location" in kwargs and kwargs["location"] and city_location == "Bengaluru":
+        city_location = kwargs["location"]
+    if "area_sqft" in kwargs and kwargs["area_sqft"]:
+        total_area_sqft = float(kwargs["area_sqft"])
+    if "total_area" in kwargs and kwargs["total_area"]:
+        total_area_sqft = float(kwargs["total_area"])
+
     # Calculate plot dimensions & built up area
     if not plot_dimensions:
         plot_dimensions = f"{plot_width_ft:.0f} ft x {plot_length_ft:.0f} ft"

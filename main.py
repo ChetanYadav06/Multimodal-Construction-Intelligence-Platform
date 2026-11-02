@@ -119,8 +119,14 @@ st.markdown("""
 # Sidebar Navigation & Settings
 # -------------------------------------------------------------
 with st.sidebar:
-    st.image("https://images.unsplash.com/photo-1541888946425-d0fbb18086f6?auto=format&fit=crop&w=400&q=80", width=280)
-    st.title("🏗️ Construction AI")
+    st.markdown("""
+    <div style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding: 18px 14px; border-radius: 12px; margin-bottom: 14px; text-align: center; border: 1px solid #334155; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2);">
+        <div style="font-size: 2.2rem; margin-bottom: 6px;">🏗️</div>
+        <div style="font-size: 1.15rem; font-weight: 700; color: #f8fafc; letter-spacing: -0.01em;">Construction AI</div>
+        <div style="font-size: 0.72rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 4px;">Multimodal Intelligence</div>
+    </div>
+    """, unsafe_allow_html=True)
+    st.title("Navigation")
     st.caption("Multimodal Intelligence Platform")
 
     nav_selection = st.radio(
@@ -340,11 +346,12 @@ elif nav_selection == "📐 Construction Project Planning":
             try:
                 res = generate_project_plan(
                     project_name=p_name,
-                    description=p_desc,
-                    plot_length=p_len,
-                    plot_width=p_wid,
+                    project_description=p_desc,
+                    plot_length_ft=p_len,
+                    plot_width_ft=p_wid,
                     construction_type=const_type,
                     city_location=c_city,
+                    total_area_sqft=calc_area,
                     finish_grade=f_grade
                 )
 
@@ -423,10 +430,10 @@ elif nav_selection == "🏢 Real Estate Valuation":
             try:
                 res = analyze_real_estate(
                     property_location=prop_loc,
-                    area_sqft=built_area,
-                    age_years=b_age,
-                    prop_type=p_type,
-                    grade=q_grade,
+                    property_type=p_type,
+                    built_up_area_sqft=built_area,
+                    building_age_years=b_age,
+                    quality_grade=q_grade,
                     amenities=amenities
                 )
 
