@@ -39,3 +39,4 @@ if ($frontendPids) {
 Write-Host ""
 Write-Host "  All services stopped successfully." -ForegroundColor Green
 Write-Host ""
+

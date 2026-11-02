@@ -422,7 +422,7 @@ elif nav_selection == "🏢 Real Estate Valuation":
         with st.spinner("Analyzing regional sales comparables and micro-market appreciation trends..."):
             try:
                 res = analyze_real_estate(
-                    location=prop_loc,
+                    property_location=prop_loc,
                     area_sqft=built_area,
                     age_years=b_age,
                     prop_type=p_type,
